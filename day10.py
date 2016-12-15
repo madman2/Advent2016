@@ -1,4 +1,4 @@
-# Day 09: Explosives in Cyberspace
+# Day 10: Balance Bots
 
 def main():
     bot_chips = dict()
