@@ -1,11 +1,16 @@
 # Day 09: Explosives in Cyberspace
 
+import re
+
+pattern = r'\((\d+)x(\d+)\)'
+capture = re.compile(pattern)
+
 def main():
     f = open('day09.txt')
     data = f.read().strip()
 
     print("Part 1: {}".format(len(decompress(data))))
-    print("Part 2: {}".format(len(decompress_recurse(data))))
+    print("Part 2: {}".format(sum(decompress_recurse(data))))
 
 def decompress(data):
     i = 0
@@ -27,15 +32,20 @@ def decompress(data):
     return result
 
 def decompress_recurse(data):
-    new_data = decompress(data)
-    old_data = []
+    while len(data) > 0:
+        marker = re.search(capture, data)
+        if marker is None:
+            yield len(data)
+            break
 
-    while len(new_data) > len(old_data):
-        old_data = new_data
-        new_data = decompress(old_data)
-        print(len(new_data))
+        yield len(data[:marker.start()])
+        data = data[marker.end():]
+        w, n = map(int, marker.groups())
+        w_data = data[:w]
+        data = data[w:]
 
-    return new_data
+        for count in decompress_recurse(w_data):
+            yield n * count
 
 if __name__ == "__main__":
     main()
