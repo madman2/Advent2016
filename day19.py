@@ -2,33 +2,29 @@
 
 from math import floor
 
-class Elf:
-    def __init__(self, index):
-        self.index = index
-        self.presents = 0
-
 def main():
-    print(white_elephant(10))
+    my_input = 3004953
+    print("Part 1: {}".format(white_elephant_A(my_input)))
+    print("Part 2: {}".format(white_elephant_B(my_input)))
 
-def white_elephant(n):
-    elves = [Elf(x + 1) for x in range(0, n)]
+def white_elephant_A(n):
+    mod = 1
+    while mod <= n:
+        mod *= 2
+    mod /= 2
+    return int(1 + 2 * (n % mod))
 
-    current_elf = 0
-    while len(elves) > 1:
-        cross_elf = get_cross_elf(current_elf, len(elves))
-        elves[current_elf].presents += elves[cross_elf].presents
-        del elves[cross_elf]
-        if current_elf == len(elves):
-            current_elf = len(elves) - 1
-        current_elf = (current_elf + 1) % len(elves)
-
-    return elves[current_elf].index
-
-def get_next_elf(current_elf, total_elves):
-    return (current_elf + 1) % total_elves
-
-def get_cross_elf(current_elf, total_elves):
-    return (current_elf + floor(total_elves / 2)) % total_elves
+def white_elephant_B(n):
+    mod = 1
+    while mod <= n:
+        mod *= 3
+    mod /= 3
+    if n == mod:
+        return n
+    elif n < 2 * mod:
+        return int(n % mod)
+    else:
+        return int(mod + 2 * (n % mod))
 
 if __name__ == "__main__":
     main()
