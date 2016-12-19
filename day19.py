@@ -9,16 +9,14 @@ def main():
 
 def white_elephant_A(n):
     mod = 1
-    while mod <= n:
+    while mod <= n / 2:
         mod *= 2
-    mod /= 2
     return int(1 + 2 * (n % mod))
 
 def white_elephant_B(n):
     mod = 1
-    while mod <= n:
+    while mod <= n / 3:
         mod *= 3
-    mod /= 3
     if n == mod:
         return n
     elif n < 2 * mod:
