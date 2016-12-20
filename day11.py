@@ -2,6 +2,7 @@
 
 from itertools import combinations_with_replacement
 from itertools import combinations
+import operator
 import heapq
 
 def main():
@@ -20,7 +21,7 @@ def solve(start, end, n):
     for state in c_states:
         unpaired_micro_floors = set()
         gen_floors = set()
-        for micro_floor, gen_floor in state:
+        for gen_floor, micro_floor in state:
             gen_floors.add(gen_floor)
             if micro_floor != gen_floor:
                 unpaired_micro_floors.add(micro_floor)
@@ -36,8 +37,6 @@ def solve(start, end, n):
             adj[state2].add(state1)
             edges[state1, state2] = elevator_path
             edges[state2, state1] = elevator_path[::-1]
-    
-    print(adj[(3,3),(3,1)])
 
     p, min_cost = dijkstra(adj, edges, start, end)
     print(min_cost)
@@ -71,6 +70,7 @@ def dijkstra(adj, edges, s, t):
                         if d[v] > 1 + d[u]:
                             d[v] = 1 + d[u]
                             Qd[v][0] = d[v]
+                            Qd[v][1] = edges[(u, v)][1]
                             Qd[v][2] = u
                             heapq._siftdown(Q, 0, Q.index(Qd[v]))
                     else:
@@ -81,27 +81,9 @@ def dijkstra(adj, edges, s, t):
 
     return None
 
-
 def get_elevator_path(state1, state2):
-    elevator = (0, 0)
-    item_count = 0
-    for pair1, pair2 in zip(state1, state2):
-        for floor1, floor2 in zip(pair1, pair2):
-            diff = abs(floor1 - floor2)
-            if diff > 1:
-                return None
-            if diff == 1:
-                if item_count > 0:
-                    if item_count > 1:
-                        return None
-                    if elevator != (floor1, floor2):
-                        return None
-                    item_count += 1
-                else:
-                    elevator = (floor1, floor2)
-                    item_count += 1
-
-    return elevator
+#    TODO: Determine if valid paths exist between states
+    return (0,0)
 
 if __name__ == "__main__":
     main()
