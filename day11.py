@@ -6,10 +6,10 @@ from collections import defaultdict
 import heapq
 
 def main():
-    start = ((1, 1), (1, 1), (1, 1), (1, 2), (1, 2), (3, 3), (3, 3))
-    end = ((4, 4), (4, 4), (4, 4), (4, 4), (4, 4), (4, 4), (4, 4))
-    # start = ((1, 1), (1, 2), (1, 2), (3, 3), (3, 3))
-    # end = ((4, 4), (4, 4), (4, 4), (4, 4), (4, 4))
+    # start = ((1, 1), (1, 1), (1, 1), (1, 2), (1, 2), (3, 3), (3, 3))
+    # end = ((4, 4), (4, 4), (4, 4), (4, 4), (4, 4), (4, 4), (4, 4))
+    start = ((1, 1), (1, 2), (1, 2), (3, 3), (3, 3))
+    end = ((4, 4), (4, 4), (4, 4), (4, 4), (4, 4))
     solve(start, end, len(start))
 
 # Builds a graph where each vertex is a valid state, and the edges
@@ -88,9 +88,8 @@ def is_valid_state(state):
 # This returns a list of all the states theoretically accessible from a given state,
 # irregardless of whether or not the new state is within the floor bounds [1, 4]
 def get_adjacent_states(state, elevator_paths):
-    adj_states = []
     for path in elevator_paths:
-        for i in range(-1, 2, 2):
+        for i in (-1, 1):
             result = []
             elevator_start = 0
             for pair, diff in zip(state, path):
@@ -112,23 +111,21 @@ def get_adjacent_states(state, elevator_paths):
                         elevator_start = pair[1]
                 result.append((pair[0] + i * diff[0], pair[1] + i * diff[1]))
             if len(result) == len(state):
-                adj_states.append(((elevator_start, elevator_start + i), tuple(sorted(result))))
-    return adj_states
+                yield ((elevator_start, elevator_start + i), tuple(sorted(result)))
 
 # This builds all the possible elevator paths. These are added to valid
 # states, and if the result is also a valid state, then an edge exists
 # in the graph
 def build_elevator_paths(n):
     valid_paths = set()
-    l = []
-    l.append([(0, 1)])
-    l.append([(1, 0)])
-    l.append([(1, 1)])
-    l.append([(0, 1), (0, 1)])
-    l.append([(0, 1), (1, 0)])
-    l.append([(1, 0), (0, 1)])
-    l.append([(1, 0), (1, 0)])
-    for row in l:
+    item_moves = [[(0, 1)],
+                  [(1, 0)],
+                  [(1, 1)],
+                  [(0, 1), (0, 1)],
+                  [(0, 1), (1, 0)],
+                  [(1, 0), (0, 1)],
+                  [(1, 0), (1, 0)]]
+    for row in item_moves:
         row.extend([(0, 0)] * (n - len(row)))
         for permutation in permutations(row):
             valid_paths.add(permutation)
