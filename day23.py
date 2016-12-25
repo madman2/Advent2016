@@ -1,4 +1,4 @@
-# Day 12: Leonardo's Monorail
+# Day 23: Safe Cracking
 
 from enum import Enum
 from math import factorial
